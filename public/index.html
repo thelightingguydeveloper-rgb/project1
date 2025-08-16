@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1 - DevBoard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="logo">
+                Project 1 DevBoard
+            </h1>
+            <div class="header-user">
+                <div class="user-profile" id="userProfile">
+                    <img id="userAvatar" src="/uploads/default-avatar.png" alt="Avatar">
+                    <span id="username">Loading...</span>
+                    <div class="user-dropdown">
+                        <button onclick="uploadProfilePicture()">
+                            <i class="fas fa-user-circle"></i>
+                            Change Avatar
+                        </button>
+                        <button onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="tasks">
+                <i class="fas fa-tasks"></i>
+                My Tasks
+            </button>
+            <button class="nav-tab" data-tab="create-task">
+                <i class="fas fa-plus"></i>
+                Create Task
+            </button>
+            <button class="nav-tab" data-tab="claimable">
+                <i class="fas fa-hand-paper"></i>
+                Claimable Tasks
+            </button>
+            <button class="nav-tab" data-tab="dashboard" style="display: none;">
+                <i class="fas fa-chart-pie"></i>
+                Dashboard
+            </button>
+            <button class="nav-tab" data-tab="manage" style="display: none;">
+                <i class="fas fa-users"></i>
+                Manage Developers
+            </button>
+        </nav>
+
+        <!-- Tasks Tab -->
+        <div class="tab-content active" id="tasksTab">
+            <div class="tasks-header">
+                <h2>My Tasks</h2>
+                <div class="task-filters">
+                    <select id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="not-started">Not Started</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="done">Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="tasks-grid" id="tasksGrid">
+                <!-- Tasks will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Create Task Tab -->
+        <div class="tab-content" id="create-taskTab">
+            <div class="create-task-form">
+                <h2>Create New Task</h2>
+                <form id="taskForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Task Title *</label>
+                            <input type="text" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select name="priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Assign To</label>
+                            <select name="assigned_to" id="assignToSelect">
+                                <option value="">Select Developer</option>
+                                <option value="claimable">Make Claimable</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" name="due_date">
+                        </div>
+                        <div class="form-group">
+                            <label>Game</label>
+                            <input type="text" name="game" placeholder="Enter game name...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" rows="4" placeholder="Enter task description..."></textarea>
+                    </div>
+                    <input type="hidden" name="status" value="not-started">
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Create Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Claimable Tasks Tab -->
+        <div class="tab-content" id="claimableTab">
+            <div class="tasks-header">
+                <h2>Claimable Tasks</h2>
+                <p>Tasks available for any developer to claim</p>
+            </div>
+            <div class="tasks-grid" id="claimableTasksGrid">
+                <!-- Claimable tasks will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Dashboard Tab (Community Managers only) -->
+        <div class="tab-content" id="dashboardTab">
+            <div id="dashboardStats">
+                <!-- Stats will be loaded here -->
+            </div>
+            <div id="developerOverview">
+                <!-- Developer stats will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Manage Developers Tab -->
+        <div class="tab-content" id="manageTab">
+            <div class="manage-header">
+                <h2>Manage Developers</h2>
+                <button class="btn btn-primary" onclick="showCreateDeveloperModal()">
+                    <i class="fas fa-user-plus"></i>
+                    Add Developer
+                </button>
+            </div>
+            <div class="developers-list" id="developersList">
+                <!-- Developers will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="taskModalTitle">Task Details</h3>
+                <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="taskModalBody">
+                <!-- Task details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Developer Modal -->
+    <div class="modal" id="createDeveloperModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Developer</h3>
+                <button class="close-btn" onclick="closeCreateDeveloperModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createDeveloperForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Create Developer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Check Modal -->
+    <div class="modal" id="securityModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Security Verification</h3>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your developer code to continue:</p>
+                <div class="form-group">
+                    <input type="text" id="developerCodeInput" placeholder="Developer Code" required>
+                </div>
+                <button onclick="submitSecurityCheck()" class="btn btn-primary">
+                    <i class="fas fa-shield-alt"></i>
+                    Verify
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="profileUpload" accept="image/*" style="display: none;">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
